@@ -74,7 +74,7 @@ $.message = ''
 
 //开始刷步数
 function login(timeout = 0) {
-  step = RT(20000, 35000)
+  step = RT(10000, 19999)
   return new Promise((resolve) => {
     let url = {
       url: `https://service-1s44vwdq-1303989666.gz.apigw.tencentcs.com/release/xiaomi?user=${user}&password=${mima}&step=${step}`,
