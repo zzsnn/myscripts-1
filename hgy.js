@@ -1,6 +1,6 @@
 /*
 脚本不兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-注册地址：https://www.hzhuayangsz.com/#/register
+注册地址：https://app.hzhuayangsz.com/#/register
 变量： app_hgy:手机号#密码
 export app_hgy='手机号#密码'
 */
