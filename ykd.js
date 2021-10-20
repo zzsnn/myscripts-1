@@ -83,6 +83,34 @@ function profile(timeout = 0) {
                     $.log(`\n【提现券】：${result.result.ticket}`)
                     $.log(`\n【手机碎片】：${result.result.fragment}`)
                     await $.wait(2000)
+                    await sign() //签到
+                } else {
+                    $.log(`\n您操作太快了~`)
+                }
+            } catch (e) {
+
+            } finally {
+
+                resolve()
+            }
+        }, timeout)
+    })
+}
+//签到信息
+function sign(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/reward/sign?`,
+            headers: JSON.parse(ykdhd),
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.code == 0) {
+                    $.log(`\n【签到状态】：${result.message}`)
+                    $.log(`\n【签到获得金币】：${result.result.coin}`)
+                    $.log(`\n【签到获得提现券】：${result.result.coupon}`)
+                    await $.wait(2000)
                     await allcoin(arr) //首页气泡
                     await $.wait(2000)
                     for (let p = 0; p < 10; p++) {
@@ -102,7 +130,9 @@ function profile(timeout = 0) {
                     await $.wait(2000)
                     await short()  //刷小视频
                 } else {
-                    $.log(`\n您操作太快了~`)
+                    $.log(`\n【签到状态】：${result.message}`)
+                    await $.wait(2000)
+                    await allcoin(arr) //首页气泡
                 }
             } catch (e) {
 
@@ -158,9 +188,9 @@ function rewardnews(newstck) {
                         console.log(`【已刷资讯15次】`)
                     } else {
                         console.log(`【看资讯获得金币】：${result.result.reward}\n`)
-                        sptime1 = result.result.time * 1000
+                        newtime1 = result.result.time * 1000
                         newstck1 = result.result.ticket
-                        await $.wait(sptime1)
+                        await $.wait(newtime1)
                         await rewardnews(newstck1)
                     }
                 } else {
