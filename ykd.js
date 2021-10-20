@@ -158,10 +158,10 @@ function rewardnews(newstck) {
                         console.log(`【已刷资讯15次】`)
                     } else {
                         console.log(`【看资讯获得金币】：${result.result.reward}\n`)
-                        sptime = result.result.time * 1000
-                        sptck = result.result.ticket
-                        await $.wait(sptime)
-                        await spvideo(sptck)
+                        sptime1 = result.result.time * 1000
+                        newstck1 = result.result.ticket
+                        await $.wait(sptime1)
+                        await rewardnews(newstck1)
                     }
                 } else {
                     console.log(`【看资讯失败】：${result.message}\n`)
