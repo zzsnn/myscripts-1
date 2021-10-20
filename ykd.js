@@ -1,4 +1,5 @@
 /*
+脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 软件名：悦看点
 下载链接：https://yuekandian.yichengw.cn/download?app=1&referrer=465331
 【REWRITE】
@@ -9,6 +10,9 @@ hostname = yuekandian.yichengw.cn
 boxjs地址 : https://raw.fastgit.org/byxiaopeng/myscripts/main/byxiaopeng.boxjs.json
 食用方法：点击首页气泡即可获取
 10 9 * * * ykd.js
+//nodejs
+export ykdhd='{"Host":"yuekandian.yichengw.cn".......}'
+抓包head的头全部复制然后转成json格式填到上面,https://tooltt.com/header2json/
 /////////////////////////////////////////////////////////////////////////////
 */
 
@@ -17,44 +21,61 @@ let status;
 status = (status = ($.getval("ykdstatus") || "1")) > 1 ? `${status}` : ""; // 账号扩展字符
 const ykdhdArr = [],
     ykdcount = ''
-let ykdhd = $.getdata('ykdhd');
+let ykdhd = $.isNode() ? (process.env.ykdhd ? process.env.ykdhd : "") : ($.getdata('ykdhd') ? $.getdata('ykdhd') : "")
+let ykdhds = ""
 let times = new Date().getTime();
 let tz = ($.getval('tz') || '1');
 let arr = [1, 2, 3, 4];
 let sparr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 let host=`https://yuekandian.yichengw.cn`
 $.message = ''
-!(async () => {
-    if (typeof $request !== "undefined") {
-        ykdck()
-    } else {
-        ykdhdArr.push($.getdata('ykdhd'))
-        let ykdcount = ($.getval('ykdcount') || '1');
-        for (let i = 2; i <= ykdcount; i++) {
-            ykdhdArr.push($.getdata(`ykdhd${i}`))
-        }
-        console.log(
-            `\n\n=============================================== 脚本执行 - 北京时间(UTC+8)：${new Date(
-                new Date().getTime() +
-                new Date().getTimezoneOffset() * 60 * 1000 +
-                8 * 60 * 60 * 1000
-            ).toLocaleString()} ===============================================\n`
-        );
-        console.log(`=================== 共${ykdhdArr.length}个账号 ==================\n`)
-        for (let i = 0; i < ykdhdArr.length; i++) {
-            if (ykdhdArr[i]) {
-                ykdhd = ykdhdArr[i];
-                $.index = i + 1;
-                console.log(`\n【 悦看点 账号${$.index} 】`)
-                await profile() 
-            }
-        }
-    }
-    //message()
-})()
-    .catch((e) => $.logErr(e))
-    .finally(() => $.done())
 
+!(async() => {
+  if (typeof $request !== "undefined") {
+    ykdck()
+  } else {
+    if (!$.isNode()) {
+        ykdhdArr.push($.getdata('ykdhd'))
+      let ykdcount = ($.getval('ykdcount') || '1');
+      for (let i = 2; i <= ykdcount; i++) {
+        ykdhdArr.push($.getdata(`ykdhd${i}`))
+      }
+      console.log(`-------------共${ykdhdArr.length}个账号-------------\n`)
+      for (let i = 0; i < ykdhdArr.length; i++) {
+        if (ykdhdArr[i]) {
+            ykdhd = ykdhdArr[i];
+            $.index = i + 1;
+            console.log(`\n【 悦看点 账号${$.index} 】`)
+            await profile() 
+        }
+      }
+    } else {
+      if (process.env.ykdhd && process.env.ykdhd.indexOf('@') > -1) {
+        ykdhdArr = process.env.ykdhd.split('@');
+        console.log(`您选择的是用"@"隔开\n`)
+      } else {
+        ykdhds = [process.env.ykdhd]
+      };
+      Object.keys(ykdhds).forEach((item) => {
+        if (ykdhds[item]) {
+            ykdhdArr.push(ykdhds[item])
+        }
+      })
+      console.log(`共${ykdhdArr.length}个账号`)
+      for (let k = 0; k < ykdhdArr.length; k++) {
+        $.message = ""
+        ykdhd = ykdhdArr[k]
+        $.index = k + 1;
+        console.log(`\n【 悦看点 账号${$.index} 】`)
+        await profile() 
+      }
+    }
+  }
+  //message()
+})()
+  .catch ((e) => $.logErr(e))
+  .finally(() => $.done())
+  
 
 function ykdck() {
     if ($request.url.indexOf("api/v1/reward/coin?") > -1) {
@@ -129,15 +150,68 @@ function sign(timeout = 0) {
                     await news()  //刷新闻
                     await $.wait(2000)
                     await short()  //刷小视频
+                    await $.wait(5000)
+                    await exchange() //开始提现
                 } else {
                     $.log(`\n【签到状态】：${result.message}`)
                     await $.wait(2000)
-                    await allcoin(arr) //首页气泡
+                    await allcoin(arr)
                 }
             } catch (e) {
 
             } finally {
 
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+
+//查询是否符合提现要求
+function exchange(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/cash/exchange?`,
+            headers: JSON.parse(ykdhd),
+        }
+        $.get(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.items[0]['is_ok'] == 1) {
+                    $.log(`\n【符合提现要求开始提现】`)
+                    await $.wait(2000)
+                    await exchangetx() //开始提现
+                } else {
+                    $.log(`\n【不符合提现要求 去资讯页面观看2分钟】`)
+                }
+            } catch (e) {
+            } finally {
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//申请活动提现
+function exchangetx(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/cash/exchange?`,
+            headers: JSON.parse(ykdhd),
+            body: `amount=0.3&gate=wechat&`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.code == 0) {
+                    $.log(`\n【提现状态】：${result.result.message}`)
+                    $.log(`\n【提现进度】：${result.result.title}`)
+                } else {
+                    $.log(`\n【提现状态】：${result.message}`)
+                }
+            } catch (e) {
+            } finally {
                 resolve()
             }
         }, timeout)
@@ -157,10 +231,63 @@ function news(timeout = 0) {
                     console.log(`【准备开始看资讯】\n`)
                     newstime = result.result.time * 1000
                     newstck = result.result.ticket
+                    await interval() //开始记录阅读时间
                     await $.wait(newstime)
                     await rewardnews(newstck)
                 } else {
                     console.log(`【获取看资讯失败】`)
+
+                }
+            } catch (e) {
+
+            } finally {
+
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//开始记录阅读时间
+function interval(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/reward/news/interval?`,
+            headers: JSON.parse(ykdhd),
+        }
+        $.get(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.code == 0) {
+                    console.log(`【看资讯时长记录开始】\n`)
+                } else {
+                    console.log(`【看资讯时长记录失败】`)
+
+                }
+            } catch (e) {
+
+            } finally {
+
+                resolve()
+            }
+        }, timeout)
+    })
+}
+
+//结束记录阅读时间
+function intervalend(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/reward/news/interval?end=1&`,
+            headers: JSON.parse(ykdhd),
+        }
+        $.get(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.code == 0) {
+                    console.log(`【看资讯时长记录完毕】\n`)
+                } else {
+                    console.log(`【看资讯时长记录失败】`)
 
                 }
             } catch (e) {
@@ -185,9 +312,11 @@ function rewardnews(newstck) {
                 result = JSON.parse(data)
                 if (result.code == 0) {
                     if (result.result['today_count'] >= 15) {
-                        console.log(`【已刷资讯15次】`)
+                        console.log(`【已刷资讯15次】\n`)
+                        await intervalend() //结束记录阅读时间
                     } else {
                         console.log(`【看资讯获得金币】：${result.result.reward}\n`)
+                        console.log(`【已刷资讯${result.result['today_count']}次】`)
                         newtime1 = result.result.time * 1000
                         newstck1 = result.result.ticket
                         await $.wait(newtime1)
@@ -195,6 +324,7 @@ function rewardnews(newstck) {
                     }
                 } else {
                     console.log(`【看资讯失败】：${result.message}\n`)
+                
                 }
             } catch (e) {
 
@@ -249,6 +379,7 @@ function spvideo(sptck) {
                         console.log(`【已刷视频15次】`)
                     } else {
                         console.log(`【刷视频获得金币】：${result.result.reward}\n`)
+                        console.log(`【已刷视频${result.result['today_count']}次】`)
                         sptime = result.result.time * 1000
                         sptck = result.result.ticket
                         await $.wait(sptime)
@@ -269,8 +400,8 @@ function spvideo(sptck) {
 //首页金币 4次
 async function allcoin(Array) {
     for (const i of Array) {
-        await $.wait(5000)
         await coin(i)
+        await $.wait(30000)
     }
 }
 //首页金币
@@ -372,7 +503,7 @@ function coupon(timeout = 0) {
                 result = JSON.parse(data)
                 if (result.code == 0) {
                     time = result.result.items[1].time * 1000
-                    $.log(`\n执行下个视频任务时间：${time}`)
+                    $.log(`\n执行下个视频任务时间：${time}毫秒`)
                     await $.wait(time)
                 } else {
                     $.log(`\n获取时间失败`)
