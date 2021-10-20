@@ -192,7 +192,6 @@ function exchange(timeout = 0) {
         }, timeout)
     })
 }
-
 //申请活动提现
 function exchangetx(timeout = 0) {
     return new Promise((resolve) => {
