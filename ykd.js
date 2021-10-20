@@ -2,8 +2,11 @@
 软件名：悦看点
 下载链接：https://yuekandian.yichengw.cn/download?app=1&referrer=465331
 【REWRITE】
-匹配链接（正则表达式） https://yuekandian.yichengw.cn/api/v1/reward/coin?
-对应重写目标   https://raw.fastgit.org/byxiaopeng/myscripts/main/ykd.js
+匹配链接 https://yuekandian.yichengw.cn/api/v1/reward/coin?
+对应重写目标 https://raw.fastgit.org/byxiaopeng/myscripts/main/ykd.js
+[MITM]
+hostname = yuekandian.yichengw.cn
+boxjs地址 : https://raw.fastgit.org/byxiaopeng/myscripts/main/byxiaopeng.boxjs.json
 食用方法：点击首页气泡即可获取
 10 9 * * * ykd.js
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +58,6 @@ $.message = ''
 
 function ykdck() {
     if ($request.url.indexOf("api/v1/reward/coin?") > -1) {
-
         const ykdhd = JSON.stringify($request.headers)
         if (ykdhd) $.setdata(ykdhd, `ykdhd${status}`)
         $.log(ykdhd)
@@ -209,7 +211,7 @@ function spvideo(sptck) {
             headers: JSON.parse(ykdhd),
             body: `ticket=${sptck}&short=0&`,
         }
-        $.get(url, async (err, resp, data) => {
+        $.post(url, async (err, resp, data) => {
             try {
                 result = JSON.parse(data)
                 if (result.code == 0) {
