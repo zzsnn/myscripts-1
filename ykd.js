@@ -107,7 +107,7 @@ function sign(timeout = 0) {
             try {
                 result = JSON.parse(data)
                 if (result.code == 0) {
-                    $.log(`\n【签到状态】：${result.message}`)
+                    $.log(`\n【签到状态】：${result.result.message}`)
                     $.log(`\n【签到获得金币】：${result.result.coin}`)
                     $.log(`\n【签到获得提现券】：${result.result.coupon}`)
                     await $.wait(2000)
