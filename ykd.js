@@ -26,7 +26,7 @@ let ykdhds = ""
 let times = new Date().getTime();
 let tz = ($.getval('tz') || '1');
 let arr = [1, 2, 3, 4];
-let sparr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let cgarr = [1, 2, 3, 4, 5, 6, 7];
 let host=`https://yuekandian.yichengw.cn`
 $.message = ''
 
@@ -46,7 +46,7 @@ $.message = ''
             ykdhd = ykdhdArr[i];
             $.index = i + 1;
             console.log(`\n【悦看点 账号${$.index} 】`)
-            await profile() 
+            await sign() 
         }
       }
     } else {
@@ -67,11 +67,11 @@ $.message = ''
         ykdhd = ykdhdArr[k]
         $.index = k + 1;
         console.log(`\n【悦看点 账号${$.index} 】`)
-        await profile() 
+        await sign() 
       }
     }
   }
-  //message()
+  message()
 })()
   .catch ((e) => $.logErr(e))
   .finally(() => $.done())
@@ -99,12 +99,13 @@ function profile(timeout = 0) {
             try {
                 result = JSON.parse(data)
                 if (result.code == 0) {
-                    $.log(`\n【欢迎吊毛用户】：${result.result.nickname}`)
-                    $.log(`\n【当前账户金币】：${result.result.point}`)
-                    $.log(`\n【提现券】：${result.result.ticket}`)
-                    $.log(`\n【手机碎片】：${result.result.fragment}`)
-                    await $.wait(2000)
-                    await sign() //签到
+                    $.message += `\n【10.22】：修复自动提现增加闯关换手机`
+                    $.message += `\n【欢迎吊毛用户】：${result.result.nickname}`
+                    $.message += `\n【当前账户金币】：${result.result.point}`
+                    $.message += `\n【提现券】：${result.result.ticket}`
+                    $.message += `\n【手机碎片】：${result.result.fragment}`
+                    $.message += `\n【账户邀请码】：${result.result.pin}`
+                    $.message += `\n【今日收益金币】：${result.result['today_point']}`
                 } else {
                     $.log(`\n您操作太快了~`)
                 }
@@ -151,6 +152,10 @@ function sign(timeout = 0) {
                     await $.wait(2000)
                     await short()  //刷小视频
                     await $.wait(5000)
+                    await allbarrier(cgarr) //闯关
+                    await $.wait(5000)
+                    await profile()
+                    await $.wait(5000)
                     await exchange() //开始提现
                 } else {
                     $.log(`\n【签到状态】：${result.message}`)
@@ -176,8 +181,8 @@ function exchange(timeout = 0) {
         $.get(url, async (err, resp, data) => {
             try {
                 result = JSON.parse(data)
-                if (result.items[0]['is_ok'] == 1) {
-                    $.log(`\n【符合提现要求开始提现】`)
+                if (result.result.items[0]['is_ok'] == 1) {
+                    $.log(`\n【提现要求】：${result.result.items[0]['tixian_tip']}`)
                     await $.wait(2000)
                     await exchangetx() //开始提现
                 } else {
@@ -204,6 +209,8 @@ function exchangetx(timeout = 0) {
                 if (result.code == 0) {
                     $.log(`\n【提现状态】：${result.result.message}`)
                     $.log(`\n【提现进度】：${result.result.title}`)
+                    $.message += `\n【提现状态】：${result.result.message}`
+                    $.message += `\n【提现进度】：${result.result.title}`
                 } else {
                     $.log(`\n【提现状态】：${result.message}`)
                 }
@@ -448,7 +455,7 @@ function placement14(timeout = 0) {
             try {
                 result = JSON.parse(data)
                 if (result.code == 0) {
-                    $.log(`\n开始执行广告`)
+                    $.log(`\n开始执行气泡广告`)
                     await $.wait(20000)
                     await log14() //结束气泡广告
                 } else {
@@ -513,13 +520,7 @@ function coinlq(num) {
         }, 0)
     })
 }
-//视频金币 10次
-async function allvideo(Array) {
-    for (const i of Array) {
-        await $.wait(5000)
-        await video()
-    }
-}
+
 //视频任务
 function video(timeout = 0) {
     return new Promise((resolve) => {
@@ -678,12 +679,69 @@ function done(timeout = 0) {
     })
 }
 
+
+//闯关7次
+async function allbarrier(Array) {
+    for (const i of Array) {
+        await barrier(i)
+        await $.wait(5000)
+    }
+}
+//闯关换手机
+function barrier(num) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/reward/barrier/index?`,
+            headers: JSON.parse(ykdhd),
+        }
+        $.get(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.result['current_barrier'] == 7) {
+                    $.log(`\n闯关任务亿完成7关`)
+                } else {
+                    $.log(`\n开始闯关任务`)
+                    await $.wait(5000)
+                    await barrierlq(num)
+                }
+            } catch (e) {
+
+            } finally {
+
+                resolve()
+            }
+        }, 0)
+    })
+}
+//闯关换手机
+function barrierlq(num) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `${host}/api/v1/reward/barrier/index?`,
+            headers: JSON.parse(ykdhd),
+            body: `no=${num}&`,
+        }
+        $.post(url, async (err, resp, data) => {
+            try {
+                result = JSON.parse(data)
+                if (result.code == 0) {
+                    $.log(`\n闯关获得金币：${result.result.coin}`)
+                } else {
+                    $.log(`\n闯关领取失败`)
+                }
+            } catch (e) {
+
+            } finally {
+
+                resolve()
+            }
+        }, 0)
+    })
+}
 //领现金看广告
 //https://yuekandian.yichengw.cn/api/v1/reward/help/click?
 //https://yuekandian.yichengw.cn/api/v1/ad/log?ticket=xxx&type=5&
 //https://yuekandian.yichengw.cn/api/v1/reward/help/index?
-//闯关换手机
-//https://yuekandian.yichengw.cn/api/v1/reward/barrier/index?  no=1& 1-7
 function message() {
     if (tz == 1) { $.msg($.name, "", $.message) }
 }
