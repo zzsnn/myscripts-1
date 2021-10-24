@@ -1,12 +1,12 @@
 /*
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 项目注册地址:http://cs.clrcle.cn/api/webapp/register.html?code=ECY5A1
-10元提现自己绑定支付宝
 可以0撸 可以投资  可以推广
 三种收益叠加
 每天看广告0撸三个节点
 一个节点等于一块钱
 每天分红节点的2%
+提现门槛：满10元即可提现
 csjdPhone:手机号#密码
 export csjdPhone='手机号#密码'
 */
