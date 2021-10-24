@@ -80,11 +80,15 @@ let host=`http://cs.clrcle.cn`
 
 //登录
 function login(timeout = 0) {
-  cshd = { "Authorization": "", "user-agent": "Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034", "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" }
   return new Promise((resolve) => {
     let url = {
       url: `${host}/api/app/authentication/login`,
-      headers: cshd,
+      headers: {
+        "Authorization": "",
+        "Connection":"keep-alive",
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+    },
       body: `loginName=${user}&password=${mima}`,
     }
     $.post(url, async (err, resp, data) => {
@@ -93,7 +97,6 @@ function login(timeout = 0) {
         if (result.code == 0) {
           console.log(`\n【登录状态】: ${result.msg}`)
           token = result.data
-          hd = `{ "Authorization": "${token}", "user-agent": "Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034", "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" }`
           await $.wait(3000)
           await info()//个人信息
         } else {
@@ -111,7 +114,12 @@ function info(timeout = 0) {
   return new Promise((resolve) => {
     let url = {
       url: `${host}/api/app/api/customer_ext/personalDetails`,
-      headers: JSON.parse(hd),
+      headers: {
+        "Authorization": token,
+        "Connection":"keep-alive",
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+    },
     }
     $.get(url, async (err, resp, data) => {
       try {
@@ -143,7 +151,12 @@ function addAdvertDayCount(timeout = 0) {
   return new Promise((resolve) => {
     let url = {
       url: `${host}/api/app/api/customer_ext/addAdvertDayCount`,
-      headers: JSON.parse(hd),
+      headers: {
+        "Authorization": token,
+        "Connection":"keep-alive",
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+    },
     }
     $.post(url, async (err, resp, data) => {
       try {
