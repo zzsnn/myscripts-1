@@ -1,8 +1,7 @@
 /*
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 项目注册地址:http://cs.clrcle.cn/api/webapp/register.html?code=ECY5A1
-不含邀请链接
-需要实名认证后绑定支付宝
+10元提现自己绑定支付宝
 csjdPhone:手机号#密码
 export csjdPhone='手机号#密码'
 */
@@ -10,8 +9,6 @@ export csjdPhone='手机号#密码'
 // [task_local]
 //#创视节点
 // 9 10 * * * https://raw.fastgit.org/byxiaopeng/myscripts/main/csjd.js, tag=创视节点, enabled=true
-
-
 const $ = new Env('创视节点APP');
 let status;
 status = (status = ($.getval("csjdstatus") || "1")) > 1 ? `${status}` : ""; // 账号扩展字符
