@@ -94,7 +94,8 @@ function login(timeout = 0) {
           console.log(`\n【登录状态】: ${result.msg}`)
           token = result.data
           hd = `{ "Authorization": "${token}", "user-agent": "Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034", "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" }`
-          await personalDetails()
+          await $.wait(3000)
+          await info()//个人信息
         } else {
           console.log(`\n【登录状态】: ${result.msg}`)
         }
@@ -106,11 +107,11 @@ function login(timeout = 0) {
   })
 }
 //账户信息
-function personalDetails(timeout = 0) {
+function info(timeout = 0) {
   return new Promise((resolve) => {
     let url = {
       url: `${host}/api/app/api/customer_ext/personalDetails`,
-      headers: hd,
+      headers: JSON.parse(hd),
     }
     $.get(url, async (err, resp, data) => {
       try {
@@ -142,7 +143,7 @@ function addAdvertDayCount(timeout = 0) {
   return new Promise((resolve) => {
     let url = {
       url: `${host}/api/app/api/customer_ext/addAdvertDayCount`,
-      headers: hd,
+      headers: JSON.parse(hd),
     }
     $.post(url, async (err, resp, data) => {
       try {
