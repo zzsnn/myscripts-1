@@ -100,7 +100,7 @@ function login(timeout = 0) {
         "Authorization": "",
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
     },
       body: `loginName=${user}&password=${mima}&verifyId=${verifyId}`,
     }
@@ -135,7 +135,7 @@ function info(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
     },
     }
     $.get(url, async (err, resp, data) => {
@@ -170,11 +170,11 @@ function addAdvertDayCount(timeout = 0) {
       url: `${host}/api/app/api/customer_ext/addAdvertDayCount`,
       headers: {
         "Authorization": token,
-        "Connection":"keep-alive",
-        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
-    },
-    body: `verifyId=`
+        "Connection": "keep-alive",
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent": "Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+      },
+      body: `verifyId=`,
     }
     $.post(url, async (err, resp, data) => {
       try {
@@ -203,7 +203,7 @@ function hasIncome(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
     },
     }
     $.post(url, async (err, resp, data) => {
@@ -235,7 +235,7 @@ function receiveIncome(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
     },
     }
     $.post(url, async (err, resp, data) => {
@@ -267,7 +267,7 @@ function personalDetails(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
     },
     }
     $.get(url, async (err, resp, data) => {
