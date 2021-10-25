@@ -174,6 +174,7 @@ function addAdvertDayCount(timeout = 0) {
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
         "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
     },
+    body: `verifyId=`
     }
     $.post(url, async (err, resp, data) => {
       try {
