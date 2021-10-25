@@ -111,9 +111,11 @@ function login(timeout = 0) {
           console.log(`\n【登录状态】: ${result.msg}`)
           token = result.data
           await $.wait(3000)
-          await info()//个人信息
+          await info()//昨天个人信息
           await $.wait(3000)
           await hasIncome()//领取分成
+          await $.wait(3000)
+          await personalDetails()//今天账户信息
         } else {
           console.log(`\n【登录状态】: ${result.msg}`)
         }
@@ -141,9 +143,9 @@ function info(timeout = 0) {
         result = JSON.parse(data)
         if (result.code == 0) {
           $.log(`\n【欢迎吊毛用户】：${result.data.nickName}`)
-          $.log(`\n【账户节点】：${result.data.customerNode}`)
+          $.log(`\n【昨天账户节点】：${result.data.customerNode}`)
           $.message += `\n【欢迎吊毛用户】：${result.data.nickName}`
-          $.message += `\n【账户节点】：${result.data.customerNode}`
+          $.message += `\n【昨天账户节点】：${result.data.customerNode}`
           if (result.data.advertDayCount == 3) {
             $.log(`\n【任务状态】：今日已完成任务`)
             $.message += `\n【任务状态】：今日已完成任务`
@@ -245,6 +247,36 @@ function receiveIncome(timeout = 0) {
         } else {
           console.log(`\n【领取分成失败】：${result.msg}`)
           $.message += `\n【领取分成失败】：${result.msg}`
+        }
+      } catch (e) {
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
+
+
+//账户信息2
+function personalDetails(timeout = 0) {
+  return new Promise((resolve) => {
+    let url = {
+      url: `${host}/api/app/api/customer_ext/personalDetails`,
+      headers: {
+        "Authorization": token,
+        "Connection":"keep-alive",
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+    },
+    }
+    $.get(url, async (err, resp, data) => {
+      try {
+        result = JSON.parse(data)
+        if (result.code == 0) {
+          $.log(`\n【今天账户节点】：${result.data.customerNode}`)
+          $.message += `\n【今天账户节点】：${result.data.customerNode}`
+        } else {
+          console.log(`\n【账户信息】: ${result.msg}`)
         }
       } catch (e) {
       } finally {
