@@ -45,6 +45,8 @@ let host=`http://cs.clrcle.cn`
           zhanghu = csjdPhone.split('#')
           user = zhanghu[0]
           mima = zhanghu[1]
+          await uid()
+          await $.wait(3000)
           await login()//登录
         }
       }
@@ -69,6 +71,8 @@ let host=`http://cs.clrcle.cn`
         zhanghu = csjdPhone.split('#')
         user = zhanghu[0]
         mima = zhanghu[1]
+        await uid()
+        await $.wait(3000)
         await login()//登录获取token
       }
     }
@@ -77,8 +81,16 @@ let host=`http://cs.clrcle.cn`
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
-
-
+//随机生成32位字母和数字
+function uid() {
+  $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+  maxPos = $chars.length;
+  pwd = '';
+  for (i = 0; i < 32; i++) {
+    pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+  }
+  verifyId = pwd
+}
 //登录
 function login(timeout = 0) {
   return new Promise((resolve) => {
@@ -90,7 +102,7 @@ function login(timeout = 0) {
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
         "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
     },
-      body: `loginName=${user}&password=${mima}`,
+      body: `loginName=${user}&password=${mima}&verifyId=${verifyId}`,
     }
     $.post(url, async (err, resp, data) => {
       try {
