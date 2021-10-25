@@ -9,6 +9,7 @@
 提现门槛：满10元即可提现
 csjdPhone:手机号#密码
 export csjdPhone='手机号#密码'
+boxjs地址:https://raw.fastgit.org/byxiaopeng/myscripts/main/byxiaopeng.boxjs.json
 */
 
 // [task_local]
@@ -99,6 +100,8 @@ function login(timeout = 0) {
           token = result.data
           await $.wait(3000)
           await info()//个人信息
+          await $.wait(3000)
+          await hasIncome()//领取分成
         } else {
           console.log(`\n【登录状态】: ${result.msg}`)
         }
@@ -125,13 +128,13 @@ function info(timeout = 0) {
       try {
         result = JSON.parse(data)
         if (result.code == 0) {
-          $.log(`【欢迎吊毛用户】：${result.data.nickName}\n`)
-          $.log(`【账户节点】：${result.data.customerNode}\n`)
-          $.message += `【欢迎吊毛用户】：${result.data.nickName}\n`
-          $.message += `【账户节点】：${result.data.customerNode}\n`
+          $.log(`\n【欢迎吊毛用户】：${result.data.nickName}`)
+          $.log(`\n【账户节点】：${result.data.customerNode}`)
+          $.message += `\n【欢迎吊毛用户】：${result.data.nickName}`
+          $.message += `\n【账户节点】：${result.data.customerNode}`
           if (result.data.advertDayCount == 3) {
-            $.log(`【任务状态】：今日已完成任务`)
-            $.message += `【任务状态】：今日已完成任务`
+            $.log(`\n【任务状态】：今日已完成任务`)
+            $.message += `\n【任务状态】：今日已完成任务`
           } else {
             $.log(`【任务状态】：还有3条视频广告未观看`)
             await addAdvertDayCount()
@@ -162,7 +165,7 @@ function addAdvertDayCount(timeout = 0) {
       try {
         result = JSON.parse(data)
         if (result.msg == '操作成功') {
-          $.log(`【开始看广告信息】`)
+          $.log(`\n【开始看广告信息】`)
           await $.wait(DD)
           await addAdvertDayCount()
         } else {
@@ -176,7 +179,68 @@ function addAdvertDayCount(timeout = 0) {
     }, timeout)
   })
 }
+//分成金额
+function hasIncome(timeout = 0) {
+  return new Promise((resolve) => {
+    let url = {
+      url: `${host}/api/app/api/income/hasIncome`,
+      headers: {
+        "Authorization": token,
+        "Connection":"keep-alive",
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+    },
+    }
+    $.post(url, async (err, resp, data) => {
+      try {
+        result = JSON.parse(data)
+        if (result.code == 0) {
+          $.log(`\n【分成金额】：${result.data}`)
+          $.message += `\n【分成金额】：${result.data}`
+          await $.wait(5000)
+          await receiveIncome()
+        } else {
+          console.log(`\n【分成金额获取失败】`)
+          $.message += `\n【分成金额获取失败】`
+        }
+      } catch (e) {
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
 
+//领取分成
+function receiveIncome(timeout = 0) {
+  return new Promise((resolve) => {
+    let url = {
+      url: `${host}/api/app/api/income/receiveIncome`,
+      headers: {
+        "Authorization": token,
+        "Connection":"keep-alive",
+        "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.6) Weex/0.26.0 1080x2034",
+    },
+    }
+    $.post(url, async (err, resp, data) => {
+      try {
+        result = JSON.parse(data)
+        if (result.code == 0) {
+          $.log(`【领取分成成功】`)
+          $.message += `【领取分成成功】`
+          await $.wait(5000)
+        } else {
+          console.log(`\n【领取分成失败】：${result.msg}`)
+          $.message += `\n【领取分成失败】：${result.msg}`
+        }
+      } catch (e) {
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
 
 function RT(X, Y) {
   do rt = Math.floor(Math.random() * Y);
