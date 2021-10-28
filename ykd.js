@@ -1,7 +1,7 @@
 /*
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 软件名：悦看点
-下载链接：https://yuekandian.yichengw.cn/download?app=1&referrer=465331
+下载链接：https://yuekandian.yichengw.cn/download?app=1
 【REWRITE】
 匹配链接 https://yuekandian.yichengw.cn/api/v1/reward/coin?
 对应重写目标 https://raw.fastgit.org/byxiaopeng/myscripts/main/ykd.js
