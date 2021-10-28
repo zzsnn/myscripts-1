@@ -100,7 +100,7 @@ function login(timeout = 0) {
         "Authorization": "",
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+        "User-Agent":"Mozilla/5.0 (Linux; Android 9; Nokia X7 Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.27 Mobile Safari/537.36 uni-app Html5Plus/1.0 (Immersed/32.761906)",
     },
       body: `loginName=${user}&password=${mima}&verifyId=${verifyId}`,
     }
@@ -135,7 +135,7 @@ function info(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+        "User-Agent":"Mozilla/5.0 (Linux; Android 9; Nokia X7 Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.27 Mobile Safari/537.36 uni-app Html5Plus/1.0 (Immersed/32.761906)",
     },
     }
     $.get(url, async (err, resp, data) => {
@@ -172,7 +172,7 @@ function addAdvertDayCount(timeout = 0) {
         "Authorization": token,
         "Connection": "keep-alive",
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent": "Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 9; Nokia X7 Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.27 Mobile Safari/537.36 uni-app Html5Plus/1.0 (Immersed/32.761906)",
       },
       body: `verifyId=`,
     }
@@ -203,7 +203,7 @@ function hasIncome(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+        "User-Agent":"Mozilla/5.0 (Linux; Android 9; Nokia X7 Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.27 Mobile Safari/537.36 uni-app Html5Plus/1.0 (Immersed/32.761906)",
     },
     }
     $.post(url, async (err, resp, data) => {
@@ -235,7 +235,7 @@ function receiveIncome(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+        "User-Agent":"Mozilla/5.0 (Linux; Android 9; Nokia X7 Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.27 Mobile Safari/537.36 uni-app Html5Plus/1.0 (Immersed/32.761906)",
     },
     }
     $.post(url, async (err, resp, data) => {
@@ -267,7 +267,7 @@ function personalDetails(timeout = 0) {
         "Authorization": token,
         "Connection":"keep-alive",
         "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent":"Nokia X7(Android/9) (com.vision.creativevision/1.0.7) Weex/0.26.0 1080x2034",
+        "User-Agent":"Mozilla/5.0 (Linux; Android 9; Nokia X7 Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/96.0.4664.27 Mobile Safari/537.36 uni-app Html5Plus/1.0 (Immersed/32.761906)",
     },
     }
     $.get(url, async (err, resp, data) => {
@@ -275,7 +275,11 @@ function personalDetails(timeout = 0) {
         result = JSON.parse(data)
         if (result.code == 0) {
           $.log(`\n【今天账户节点】：${result.data.customerNode}`)
+          $.log(`\n【今天账户收益】：${result.data.dailyIncome}`)
+          $.log(`\n【账户累计收益】：${result.data.totalIncome}`)
           $.message += `\n【今天账户节点】：${result.data.customerNode}`
+          $.message += `\n【今天账户收益】：${result.data.dailyIncome}`
+          $.message += `\n【账户累计收益】：${result.data.totalIncome}`
         } else {
           console.log(`\n【账户信息】: ${result.msg}`)
         }
